@@ -15,6 +15,7 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class RegistrationScreenState extends State<RegistrationScreen> {
+  final GlobalKey<FormState> _key = GlobalKey();
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   late String email;
@@ -36,25 +37,34 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               const SizedBox(
                 height: 48.0,
               ),
-              TextField(
-                  keyboardType: TextInputType.emailAddress,
-                  textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    email = value;
-                  },
-                  decoration: kTextFieldDecoration.copyWith(
-                      hintText: 'Enter your email')),
+              Form(
+                autovalidateMode: AutovalidateMode.always,
+                child: TextFormField(
+                    validator: validateEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      email = value;
+                    },
+                    decoration: kTextFieldDecoration.copyWith(
+                        hintText: 'Enter your email')),
+              ),
               const SizedBox(
                 height: 8.0,
               ),
-              TextField(
+              Form(
+                autovalidateMode: AutovalidateMode.always,
+                child: TextFormField(
+                  validator: validatePassword,
                   obscureText: true,
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     password = value;
                   },
                   decoration: kTextFieldDecoration.copyWith(
-                      hintText: 'Enter your password')),
+                      hintText: 'Enter your password'),
+                ),
+              ),
               const SizedBox(
                 height: 24.0,
               ),
@@ -62,19 +72,22 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                 color: Colors.blue,
                 text: 'Register',
                 onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
                   try {
                     final newUser = await _auth.createUserWithEmailAndPassword(
                         email: email, password: password);
                     if (newUser != null) {
+                      setState(() {
+                        showSpinner = true;
+                      });
+
                       Navigator.pushNamed(context, ChatScreen.id);
                     }
                     setState(() {
                       showSpinner = false;
                     });
                   } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Enter user and password')));
                     //print(e);
                   }
                 },

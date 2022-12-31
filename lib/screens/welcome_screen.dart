@@ -1,5 +1,7 @@
+import 'package:chaty_app/screens/chat_screen.dart';
 import 'package:chaty_app/screens/login_screen.dart';
 import 'package:chaty_app/screens/registration_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chaty_app/components/rounded_button.dart';
 
@@ -15,6 +17,12 @@ class WelcomeScreen extends StatefulWidget {
 class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (FirebaseAuth.instance.currentUser != null) {
+        Navigator.pushNamed(context, ChatScreen.id);
+      }
+    });
+
     super.initState();
   }
 

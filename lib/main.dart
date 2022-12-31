@@ -6,9 +6,10 @@ import 'package:chaty_app/screens/chat_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
-  runApp(const ChatyApp());
-
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  runApp(const ChatyApp());
 }
 
 class ChatyApp extends StatelessWidget {

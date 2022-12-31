@@ -59,20 +59,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.lightBlueAccent,
                 text: 'Log In',
                 onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
                   try {
                     final existedUser = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
 
                     if (existedUser != null) {
+                      setState(() {
+                        showSpinner = true;
+                      });
+
                       Navigator.pushNamed(context, ChatScreen.id);
                     }
                     setState(() {
                       showSpinner = false;
                     });
                   } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Invalid user or password')));
                     //print(e);
                   }
                 },
